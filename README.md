@@ -1,32 +1,44 @@
-# React + TypeScript + Vite
+﻿# SouqFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+SouqFlow is a frontend-only e-commerce operations dashboard built with React and TypeScript.
 
-Currently, two official plugins are available:
+It helps small online stores monitor sales, orders, products, customers, and traffic sources through a clear and responsive dashboard.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Live Demo
 
-## React Compiler
+Coming soon.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Screenshots
 
-## Expanding the Oxlint configuration
+Coming soon.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Features
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+- Arabic RTL dashboard interface
+- Sales overview cards
+- Sales performance chart
+- Traffic sources visualization
+- Recent orders table
+- Responsive layout for desktop, tablet, and mobile
+- Reusable mock data structure
+- TypeScript type safety
+- Clean and focused admin dashboard design
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- CSS
+- Lucide React
+- Git and GitHub
+
+## Project Structure
+
+txt
+src/
+├── data/
+│   └── dashboard.ts
+├── App.tsx
+├── index.css
+└── main.tsx
