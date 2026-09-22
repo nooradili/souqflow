@@ -921,3 +921,22 @@ tbody tr:last-child td {
         font-size: 8px;
     }
 }
+.empty-state {
+    display: flex;
+    min-height: 150px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 7px;
+    color: #8993a6;
+    text-align: center;
+}
+
+    .empty-state strong {
+        color: #46516a;
+        font-size: 12px;
+    }
+
+    .empty-state span {
+        font-size: 10px;
+    }

@@ -10,9 +10,7 @@ function OrdersTable({ orders, searchTerm = "" }: OrdersTableProps) {
     <section className="panel orders-panel">
       <div className="panel-heading">
         <div>
-         <h3>
-  آخر الطلبات — عدد النتائج: {orders.length}
-</h3>
+         <h3>TEST ORDERS TABLE 123</h3>
 
 
           <p>

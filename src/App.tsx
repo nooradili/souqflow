@@ -1,121 +1,58 @@
-﻿import {
-  BarChart3,
-  Bell,
-  Box,
-  ChevronDown,
-  LayoutDashboard,
-  Menu,
-  Package,
-  Search,
-  Settings,
-  ShoppingCart,
-  Users,
+﻿import { useMemo, useState } from "react";
+
+import {
+ ChevronDown,
+  
 } 
 from "lucide-react";
 
 import "./index.css";
 import { orders, stats } from "./data/dashboard";
+import Sidebar from "./components/Sidebar";
+import Topbar from "./components/Topbar";
+import StatCard from "./components/StatCard";
+import OrdersTable from "./components/OrdersTable";
 
 
 function App() {
+ const [searchTerm, setSearchTerm] = useState("");
+
+const normalizeArabic = (value: string) =>
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ى/g, "ي")
+    .replace(/ة/g, "ه");
+
+const filteredOrders = useMemo(() => {
+  const normalizedSearch = normalizeArabic(searchTerm);
+
+  if (!normalizedSearch) {
+    return orders;
+  }
+
+  return orders.filter((order) =>
+    [order.id, order.customer, order.product, order.status].some((value) =>
+      normalizeArabic(value).includes(normalizedSearch),
+    ),
+  );
+}, [searchTerm]);
+
+
   return (
+
     <div className="app-shell" dir="rtl">
-      <aside className="sidebar">
-        <div className="brand">
-          <div className="brand-mark">
-            <Box size={21} strokeWidth={2.5} />
-          </div>
-          <div>
-            <h1>SouqFlow</h1>
-            <span>إدارة متجرك بذكاء</span>
-          </div>
-        </div>
+   <Sidebar />
 
-        <nav className="sidebar-nav">
-          <p className="nav-label">القائمة الرئيسية</p>
-
-          <a className="nav-item active" href="#">
-            <LayoutDashboard size={19} />
-            <span>نظرة عامة</span>
-          </a>
-
-          <a className="nav-item" href="#">
-            <ShoppingCart size={19} />
-            <span>الطلبات</span>
-            <span className="nav-badge">12</span>
-          </a>
-
-          <a className="nav-item" href="#">
-            <Package size={19} />
-            <span>المنتجات</span>
-          </a>
-
-          <a className="nav-item" href="#">
-            <BarChart3 size={19} />
-            <span>التحليلات</span>
-          </a>
-
-          <p className="nav-label second-label">الإدارة</p>
-
-          <a className="nav-item" href="#">
-            <Users size={19} />
-            <span>العملاء</span>
-          </a>
-
-          <a className="nav-item" href="#">
-            <Settings size={19} />
-            <span>الإعدادات</span>
-          </a>
-        </nav>
-
-        <div className="sidebar-footer">
-          <div className="upgrade-card">
-            <div className="upgrade-icon">
-              <BarChart3 size={18} />
-            </div>
-            <strong>طوّر متجرك</strong>
-            <p>احصل على تقارير وتحليلات أعمق.</p>
-            <button>اكتشف المزيد</button>
-          </div>
-
-          <div className="user-card">
-            <div className="avatar">م</div>
-            <div className="user-info">
-              <strong>محمد أحمد</strong>
-              <span>مدير المتجر</span>
-            </div>
-            <ChevronDown size={16} className="user-chevron" />
-          </div>
-        </div>
-      </aside>
 
       <main className="main-content">
-        <header className="topbar">
-          <button className="mobile-menu" aria-label="فتح القائمة">
-            <Menu size={21} />
-          </button>
+     <Topbar
+  searchValue={searchTerm}
+  onSearchChange={setSearchTerm}
+/>
 
-          <div className="breadcrumb">
-            <span>لوحة التحكم</span>
-            <span className="breadcrumb-separator">/</span>
-            <strong>نظرة عامة</strong>
-          </div>
 
-          <div className="topbar-actions">
-            <label className="search-box">
-              <Search size={18} />
-              <input type="search" placeholder="ابحث في متجرك..." />
-              <kbd>⌘ K</kbd>
-            </label>
-
-            <button className="icon-button notification-button" aria-label="الإشعارات">
-              <Bell size={19} />
-              <span className="notification-dot" />
-            </button>
-
-            <div className="topbar-avatar">م</div>
-          </div>
-        </header>
 
         <section className="page-content">
           <div className="page-heading">
@@ -133,30 +70,12 @@ function App() {
             </button>
           </div>
 
-          <div className="stats-grid">
-            {stats.map((stat) => {
-              const Icon = stat.icon;
+       <div className="stats-grid">
+  {stats.map((stat) => (
+    <StatCard key={stat.title} stat={stat} />
+  ))}
+</div>
 
-              return (
-                <article className="stat-card" key={stat.title}>
-                  <div className={`stat-icon ${stat.tone}`}>
-                    <Icon size={20} />
-                  </div>
-                  <div className="stat-card-top">
-                    <span>{stat.title}</span>
-                    <button className="more-button" aria-label="خيارات">
-                      •••
-                    </button>
-                  </div>
-                  <strong className="stat-value">{stat.value}</strong>
-                  <div className="stat-change">
-                    <span>↗ {stat.change}</span>
-                    <small>من الشهر الماضي</small>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
 
           <div className="dashboard-grid">
             <section className="panel sales-panel">
@@ -265,44 +184,11 @@ function App() {
             </section>
           </div>
 
-          <section className="panel orders-panel">
-            <div className="panel-heading">
-              <div>
-                <h3>آخر الطلبات</h3>
-                <p>تابع أحدث عمليات الشراء في متجرك</p>
-              </div>
-              <button className="text-button">عرض كل الطلبات ←</button>
-            </div>
+       <OrdersTable
+  orders={filteredOrders}
+  searchTerm={searchTerm}
+/>
 
-            <div className="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>رقم الطلب</th>
-                    <th>العميل</th>
-                    <th>المنتج</th>
-                    <th>القيمة</th>
-                    <th>الحالة</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.map((order) => (
-                    <tr key={order.id}>
-                      <td className="order-id">{order.id}</td>
-                      <td>{order.customer}</td>
-                      <td>{order.product}</td>
-                      <td className="amount">{order.amount}</td>
-                      <td>
-                        <span className={`status-pill ${order.statusClass}`}>
-                          {order.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
         </section>
       </main>
     </div>

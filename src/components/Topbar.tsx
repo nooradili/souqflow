@@ -1,6 +1,11 @@
 ﻿import { Bell, Menu, Search } from "lucide-react";
 
-function Topbar() {
+type TopbarProps = {
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+};
+
+function Topbar({ searchValue, onSearchChange }: TopbarProps) {
   return (
     <header className="topbar">
       <button className="mobile-menu" aria-label="فتح القائمة" type="button">
@@ -16,7 +21,15 @@ function Topbar() {
       <div className="topbar-actions">
         <label className="search-box">
           <Search size={18} />
-          <input type="search" placeholder="ابحث في متجرك..." />
+
+          <input
+            type="search"
+            placeholder="ابحث في الطلبات..."
+            value={searchValue}
+            onChange={(event) => onSearchChange(event.target.value)}
+            aria-label="البحث في الطلبات"
+          />
+
           <kbd>⌘ K</kbd>
         </label>
 
