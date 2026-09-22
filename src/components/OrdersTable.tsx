@@ -1,17 +1,32 @@
 ﻿import type { Order } from "../data/dashboard";
 
+type OrderFilter = "all" | "completed" | "processing" | "shipping";
+
 type OrdersTableProps = {
   orders: Order[];
   searchTerm?: string;
+  activeFilter: OrderFilter;
+  onFilterChange: (filter: OrderFilter) => void;
 };
 
-function OrdersTable({ orders, searchTerm = "" }: OrdersTableProps) {
+const filters: { value: OrderFilter; label: string }[] = [
+  { value: "all", label: "الكل" },
+  { value: "completed", label: "مكتمل" },
+  { value: "processing", label: "قيد التجهيز" },
+  { value: "shipping", label: "قيد الشحن" },
+];
+
+function OrdersTable({
+  orders,
+  searchTerm = "",
+  activeFilter,
+  onFilterChange,
+}: OrdersTableProps) {
   return (
     <section className="panel orders-panel">
       <div className="panel-heading">
         <div>
-         <h3>TEST ORDERS TABLE 123</h3>
-
+          <h3>آخر الطلبات</h3>
 
           <p>
             {searchTerm.trim()
@@ -25,11 +40,24 @@ function OrdersTable({ orders, searchTerm = "" }: OrdersTableProps) {
         </button>
       </div>
 
+      <div className="order-filters">
+        {filters.map((filter) => (
+          <button
+            key={filter.value}
+            type="button"
+            className={activeFilter === filter.value ? "active" : ""}
+            onClick={() => onFilterChange(filter.value)}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+
       <div className="table-wrapper">
         {orders.length === 0 ? (
           <div className="empty-state">
             <strong>لا توجد طلبات مطابقة</strong>
-            <span>جرّب اسم العميل أو رقم الطلب.</span>
+            <span>جرّب تغيير البحث أو فلتر الحالة.</span>
           </div>
         ) : (
           <table>
@@ -44,7 +72,7 @@ function OrdersTable({ orders, searchTerm = "" }: OrdersTableProps) {
             </thead>
 
             <tbody>
-              {orders.map((order: Order) => (
+              {orders.map((order) => (
                 <tr key={order.id}>
                   <td className="order-id">{order.id}</td>
                   <td>{order.customer}</td>

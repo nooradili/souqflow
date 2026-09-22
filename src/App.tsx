@@ -15,43 +15,46 @@ import OrdersTable from "./components/OrdersTable";
 
 
 function App() {
- const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-const normalizeArabic = (value: string) =>
-  value
-    .trim()
-    .toLowerCase()
-    .replace(/[أإآ]/g, "ا")
-    .replace(/ى/g, "ي")
-    .replace(/ة/g, "ه");
+  const [activeFilter, setActiveFilter] = useState<
+    "all" | "completed" | "processing" | "shipping"
+  >("all");
 
-const filteredOrders = useMemo(() => {
-  const normalizedSearch = normalizeArabic(searchTerm);
+  const normalizeArabic = (value: string) =>
+    value
+      .trim()
+      .toLowerCase()
+      .replace(/[أإآ]/g, "ا")
+      .replace(/ى/g, "ي")
+      .replace(/ة/g, "ه");
 
-  if (!normalizedSearch) {
-    return orders;
-  }
+  const filteredOrders = useMemo(() => {
+    const normalizedSearch = normalizeArabic(searchTerm);
 
-  return orders.filter((order) =>
-    [order.id, order.customer, order.product, order.status].some((value) =>
-      normalizeArabic(value).includes(normalizedSearch),
-    ),
-  );
-}, [searchTerm]);
+    return orders.filter((order) => {
+      const matchesSearch =
+        !normalizedSearch ||
+        [order.id, order.customer, order.product, order.status].some((value) =>
+          normalizeArabic(value).includes(normalizedSearch),
+        );
 
+      const matchesFilter =
+        activeFilter === "all" || order.statusClass === activeFilter;
+
+      return matchesSearch && matchesFilter;
+    });
+  }, [searchTerm, activeFilter]);
 
   return (
-
     <div className="app-shell" dir="rtl">
-   <Sidebar />
-
+      <Sidebar />
 
       <main className="main-content">
-     <Topbar
-  searchValue={searchTerm}
-  onSearchChange={setSearchTerm}
-/>
-
+        <Topbar
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
+        />
 
 
         <section className="page-content">
@@ -187,7 +190,10 @@ const filteredOrders = useMemo(() => {
        <OrdersTable
   orders={filteredOrders}
   searchTerm={searchTerm}
+  activeFilter={activeFilter}
+  onFilterChange={setActiveFilter}
 />
+
 
         </section>
       </main>
