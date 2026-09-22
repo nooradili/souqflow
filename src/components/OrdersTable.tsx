@@ -2,15 +2,24 @@
 
 type OrdersTableProps = {
   orders: Order[];
+  searchTerm?: string;
 };
 
-function OrdersTable({ orders }: OrdersTableProps) {
+function OrdersTable({ orders, searchTerm = "" }: OrdersTableProps) {
   return (
     <section className="panel orders-panel">
       <div className="panel-heading">
         <div>
-          <h3>آخر الطلبات</h3>
-          <p>تابع أحدث عمليات الشراء في متجرك</p>
+         <h3>
+  آخر الطلبات — عدد النتائج: {orders.length}
+</h3>
+
+
+          <p>
+            {searchTerm.trim()
+              ? `نتائج البحث عن: ${searchTerm}`
+              : "تابع أحدث عمليات الشراء في متجرك"}
+          </p>
         </div>
 
         <button className="text-button" type="button">
@@ -19,33 +28,40 @@ function OrdersTable({ orders }: OrdersTableProps) {
       </div>
 
       <div className="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>رقم الطلب</th>
-              <th>العميل</th>
-              <th>المنتج</th>
-              <th>القيمة</th>
-              <th>الحالة</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order.id}>
-                <td className="order-id">{order.id}</td>
-                <td>{order.customer}</td>
-                <td>{order.product}</td>
-                <td className="amount">{order.amount}</td>
-                <td>
-                  <span className={`status-pill ${order.statusClass}`}>
-                    {order.status}
-                  </span>
-                </td>
+        {orders.length === 0 ? (
+          <div className="empty-state">
+            <strong>لا توجد طلبات مطابقة</strong>
+            <span>جرّب اسم العميل أو رقم الطلب.</span>
+          </div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>رقم الطلب</th>
+                <th>العميل</th>
+                <th>المنتج</th>
+                <th>القيمة</th>
+                <th>الحالة</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {orders.map((order: Order) => (
+                <tr key={order.id}>
+                  <td className="order-id">{order.id}</td>
+                  <td>{order.customer}</td>
+                  <td>{order.product}</td>
+                  <td className="amount">{order.amount}</td>
+                  <td>
+                    <span className={`status-pill ${order.statusClass}`}>
+                      {order.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </section>
   );
